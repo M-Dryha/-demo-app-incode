@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/-demo-app-incode/static/css/main.7acaea2f.css",
+    "main.js": "/-demo-app-incode/static/js/main.07d3183d.js",
+    "index.html": "/-demo-app-incode/index.html",
+    "main.7acaea2f.css.map": "/-demo-app-incode/static/css/main.7acaea2f.css.map",
+    "main.07d3183d.js.map": "/-demo-app-incode/static/js/main.07d3183d.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7acaea2f.css",
+    "static/js/main.07d3183d.js"
+  ]
+}
