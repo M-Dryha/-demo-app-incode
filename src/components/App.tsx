@@ -1,4 +1,5 @@
-import React, { Suspense, lazy } from 'react';
+// import React, { Suspense, lazy } from 'react';
+import React, { Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import Container from '@mui/material/Container';
