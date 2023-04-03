@@ -2,18 +2,20 @@
 import { useFormik } from 'formik';
 import { Link } from 'react-router-dom';
 import { useAppDispatch } from '../../helpers/hooks/hook';
+import { Typography, Button, Box, Container } from '@mui/material';
 import { AuthOperations } from '../../redux/auth';
-import UserInfoInput from '../UserInfoInput';
 import { userSchemaSignIn } from '../../schemas/SignInSchema';
+import { WhiteTextField } from './styledComponentSignIn';
+
+import s from './SignIn.module.scss';
 
 interface LoginData {
   password: string;
-  displayName: string;
+  username: string;
 }
 
 const SignIn: React.FC<LoginData> = () => {
   const dispatch = useAppDispatch();
-  //   const isNotMobile = !useMediaQuery({ maxWidth: 767 });
 
   //   const isLoading = useSelector(userSelector.getIsLoading);
   // const resetPaste: HTMLButtonElement = event => event.preventDefault();
@@ -23,20 +25,14 @@ const SignIn: React.FC<LoginData> = () => {
 
   //       formik.errors.password ||
   //       formik.errors.username||
-  //       formik.errors.confirmPassword
   //   ) || isLoading;
-
-  // const handleSubmit = (data: UserData) => {
-  //   console.log('data', data.password);
-  //   dispatch(AuthOperations.register(data));
-  // };
 
   const handleSubmit = (values: LoginData) => {
     console.log('signin', values);
     dispatch(
       AuthOperations.signIn({
         password: values.password,
-        displayName: values.displayName,
+        username: values.username,
       })
     );
   };
@@ -44,73 +40,125 @@ const SignIn: React.FC<LoginData> = () => {
   const formik = useFormik({
     initialValues: {
       password: '',
-      displayName: '',
+      username: '',
     },
     validationSchema: userSchemaSignIn,
     onSubmit: handleSubmit,
   });
 
   return (
-    <div>
-      <form onSubmit={formik.handleSubmit}>
-        <div>
-          <UserInfoInput
+    <Container>
+      <Box
+        sx={{
+          border: '1px dashed grey',
+          width: '425px',
+          pt: '48px',
+          pl: '48px',
+          pr: '48px',
+          pb: '300px',
+          bgcolor: '#1D283A',
+          mx: 'auto',
+        }}
+      >
+        <Box>
+          <Typography
+            variant="h4"
+            sx={{
+              color: 'secondary.light',
+              fontSize: '36px',
+              fontWeight: 'bold',
+            }}
+          >
+            InCode
+          </Typography>
+          <Typography
+            variant="subtitle2"
+            sx={{ color: 'primary.main', mb: '72px' }}
+          >
+            Finance
+          </Typography>
+          <Typography
+            variant="h4"
+            sx={{
+              color: 'secondary.light',
+              fontSize: '56px',
+              fontWeight: 'bold',
+              mb: '48px',
+            }}
+          >
+            Sign In
+          </Typography>
+        </Box>
+
+        <form onSubmit={formik.handleSubmit} className={s.form}>
+          <WhiteTextField
             type="text"
-            text="User name"
-            placeholder="..."
+            label="User Name"
+            variant="standard"
             required={true}
-            name="displayName"
-            value={formik.values.displayName}
+            name="username"
+            value={formik.values.username}
             onChange={formik.handleChange}
-            errorText={formik.errors.displayName}
-            showError={formik.touched.displayName}
             onBlur={formik.handleBlur}
+            helperText={formik.touched.username && formik.errors.username}
+            sx={{ color: '#fff', mb: '24px' }}
+            size="small"
           />
 
-          <UserInfoInput
+          <WhiteTextField
             type="password"
-            text="Password"
-            placeholder="..."
+            label="Password"
+            variant="standard"
             required={true}
             name="password"
             value={formik.values.password}
             onChange={formik.handleChange}
-            errorText={formik.errors.password}
-            showError={formik.touched.password}
+            helperText={formik.touched.password && formik.errors.password}
             onBlur={formik.handleBlur}
-            maxLength={30}
-            // className={
-            //   formik.errors.password && formik.touched.password
-            //     ? 'input-error'
-            //     : ''
-            // }
+            sx={{ color: '#fff', mb: '24px' }}
+            size="small"
           />
-          {formik.errors.password && formik.touched.password && (
-            <p className="error">{formik.errors.password}</p>
-          )}
-
-          {/* <ErrorMessage
-            name="confirmPassword"
-            component="<div>ooooooooooooooooooooooo</div>"
-          /> */}
-        </div>
-        {/* <button
-          text="Зареєструватися"
-          color="accent"
-          textSize="big"
-          type="submit"
-          // disabled={isDisabled}
-        /> */}
-        <button type="submit">Sign Up</button>
-        <Link to="/login">
-          I have an account
-          {/* <a href="#">Go to Sign In</a> */}
-        </Link>
-      </form>
-    </div>
+          <Button
+            variant="contained"
+            type="submit"
+            sx={{
+              bgColor: 'primary.dark',
+              height: '44px',
+              mb: '24px',
+              fontWeight: '600',
+              fontSize: '16px',
+              lineHeight: '1.55',
+            }}
+          >
+            Sign In
+          </Button>
+          <Box
+            sx={{
+              display: 'flex',
+              fontSize: '12px',
+              mx: 'auto',
+            }}
+          >
+            <Typography
+              variant="subtitle2"
+              sx={{
+                fontSize: '12px',
+                color: 'primary.light',
+                lineHeight: '1.55',
+                mr: '5px',
+              }}
+            >
+              Don't have account yet?
+            </Typography>
+            <Link to="/" className={s.link}>
+              New Account
+            </Link>
+          </Box>
+        </form>
+      </Box>
+      {/* </Box> */}
+    </Container>
   );
-
-  // return <div>this is reg</div>;
 };
 
 export default SignIn;

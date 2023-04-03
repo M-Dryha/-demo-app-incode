@@ -8,9 +8,11 @@ type User = {
 };
 
 interface AuthUser {
-  user: User;
+  user: User | null;
   // token: string | null;
-  token: string;
+  accessToken: string;
+  refreshToken: string;
+
   // isErrorRegister: any;
   isErrorRegister: {} | null;
   isLoggedIn: boolean;
@@ -24,11 +26,11 @@ const initialState = {
     username: '',
     displayName: '',
   },
-  token: '',
+  accessToken: '',
+  refreshToken: '',
   isErrorRegister: null,
   isLoggedIn: false,
   isRefreshingCurrentUser: false,
-
   isErrorLogin: null,
 } as AuthUser;
 
@@ -40,14 +42,12 @@ const authSlice = createSlice({
     builder
       .addCase(AuthOperations.register.pending, state => {
         state.isErrorRegister = null;
-        state.isLoggedIn = true;
       })
       .addCase(AuthOperations.register.fulfilled, (state, action) => {
         state.user = action.payload.user;
-        state.token = action.payload.token;
         state.isLoggedIn = true;
       })
-      .addCase(AuthOperations.register.rejected, (state, action) => {
+      .addCase(AuthOperations.register.rejected, (state, _) => {
         //  state.isErrorRegister = action.payload;
         state.isLoggedIn = false;
       })
@@ -59,7 +59,7 @@ const authSlice = createSlice({
         state.isLoggedIn = true;
         state.isRefreshingCurrentUser = false;
       })
-      .addCase(AuthOperations.fetchCurrentUser.rejected, (state, action) => {
+      .addCase(AuthOperations.fetchCurrentUser.rejected, (state, _) => {
         state.isRefreshingCurrentUser = false;
       })
       .addCase(AuthOperations.signIn.pending, state => {
@@ -67,7 +67,8 @@ const authSlice = createSlice({
       })
       .addCase(AuthOperations.signIn.fulfilled, (state, action) => {
         state.user = action.payload.user;
-        state.token = action.payload.token;
+        // state.accessToken = action.payload.accessToken;
+        state.refreshToken = action.payload.refreshToken;
         state.isLoggedIn = true;
       })
       .addCase(AuthOperations.signIn.rejected, (state, action) => {

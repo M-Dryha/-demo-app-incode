@@ -1,10 +1,13 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { ThemeProvider } from '@mui/material/styles';
+import Container from '@mui/material/Container';
 import Register from './Register';
-import { useGetUser } from '../helpers/hooks/useGetUser';
+// import { useGetUser } from '../helpers/hooks/useGetUser';
 import { useAppSelector } from '../helpers/hooks/hook';
 import Loader from './Loader';
 import SignIn from './SignIn/SignIn';
+import { theme } from '../helpers/MUI-theme';
 // import { useAppDispatch, useAppSelector } from '../../helpers/hooks';
 
 // type JSXNode = JSX.Element | null;
@@ -31,22 +34,24 @@ import SignIn from './SignIn/SignIn';
 // };
 
 export const App: React.FC = () => {
-  useGetUser();
+  // useGetUser();
   const isFetchingUser = useAppSelector(
     state => state.auth.isRefreshingCurrentUser
   );
   if (!isFetchingUser) {
     return (
       <Suspense fallback={<Loader />}>
-        <div>
-          <Routes>
-            <Route path="/" element={<Register />} />
-            <Route
-              path="/login"
-              element={<SignIn password={''} displayName={''} />}
-            />
-          </Routes>
-        </div>
+        <ThemeProvider theme={theme}>
+          <Container maxWidth="xl" sx={{}}>
+            <Routes>
+              <Route path="/" element={<Register />} />
+              <Route
+                path="/login"
+                element={<SignIn password={''} username={''} />}
+              />
+            </Routes>
+          </Container>
+        </ThemeProvider>
       </Suspense>
     );
   }
