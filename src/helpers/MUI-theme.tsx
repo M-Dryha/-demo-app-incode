@@ -13,8 +13,10 @@ export const theme = createTheme({
     secondary: {
       light: '#fff',
       main: '#f44336',
-      dark: '#ba000d',
-      contrastText: '#000',
+      dark: '#1D283A',
+    },
+    action: {
+      disabled: 'white',
     },
   },
 });

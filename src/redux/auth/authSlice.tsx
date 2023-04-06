@@ -1,24 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import AuthOperations from './auth-operations';
-
-type User = {
-  password: string;
-  username: string;
-  displayName: string;
-};
-
-interface AuthUser {
-  user: User | null;
-  // token: string | null;
-  accessToken: string;
-  refreshToken: string;
-
-  // isErrorRegister: any;
-  isErrorRegister: {} | null;
-  isLoggedIn: boolean;
-  isRefreshingCurrentUser: boolean;
-  isErrorLogin: null;
-}
+import { AuthUser } from '../.././types/type';
 
 const initialState = {
   user: {
@@ -26,96 +8,73 @@ const initialState = {
     username: '',
     displayName: '',
   },
-  accessToken: '',
-  refreshToken: '',
-  isErrorRegister: null,
+  accessToken: null,
+  refreshToken: null,
+  isRegister: false,
+  isErrorRegister: false,
   isLoggedIn: false,
+  isLoggedInLoading: false,
   isRefreshingCurrentUser: false,
-  isErrorLogin: null,
+  isErrorLogin: false,
 } as AuthUser;
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    setNewCredentials: (state, { payload }) => {
+      state.accessToken = payload.accessToken;
+      state.refreshToken = payload.refreshToken;
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(AuthOperations.register.pending, state => {
-        state.isErrorRegister = null;
+        state.isErrorRegister = false;
+        state.isLoggedInLoading = true;
+        state.isRegister = false;
       })
       .addCase(AuthOperations.register.fulfilled, (state, action) => {
         state.user = action.payload.user;
-        state.isLoggedIn = true;
+        state.isLoggedInLoading = false;
+        state.isRegister = true;
       })
-      .addCase(AuthOperations.register.rejected, (state, _) => {
-        //  state.isErrorRegister = action.payload;
-        state.isLoggedIn = false;
-      })
-      .addCase(AuthOperations.fetchCurrentUser.pending, state => {
-        state.isRefreshingCurrentUser = true;
-      })
-      .addCase(AuthOperations.fetchCurrentUser.fulfilled, (state, action) => {
-        state.user = action.payload.user;
-        state.isLoggedIn = true;
-        state.isRefreshingCurrentUser = false;
-      })
-      .addCase(AuthOperations.fetchCurrentUser.rejected, (state, _) => {
-        state.isRefreshingCurrentUser = false;
+      .addCase(AuthOperations.register.rejected, (state, action) => {
+        state.isErrorRegister =
+          action.error.message === 'Request failed with status code 400'
+            ? 'Something went wrong'
+            : 'Correct your data';
+        state.isRegister = false;
       })
       .addCase(AuthOperations.signIn.pending, state => {
-        state.isErrorLogin = null;
+        state.isErrorLogin = false;
+        state.isLoggedInLoading = true;
+        state.isLoggedIn = false;
       })
       .addCase(AuthOperations.signIn.fulfilled, (state, action) => {
+        state.isErrorLogin = false;
         state.user = action.payload.user;
-        // state.accessToken = action.payload.accessToken;
+        state.isLoggedInLoading = false;
+        state.accessToken = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
         state.isLoggedIn = true;
       })
       .addCase(AuthOperations.signIn.rejected, (state, action) => {
-        //  state.isErrorLogin = action.payload;
+        state.isErrorLogin =
+          action.error.message === 'Request failed with status code 401'
+            ? 'Invalid username or password'
+            : 'Something went wrong';
+        state.isLoggedInLoading = false;
+        state.isLoggedIn = false;
+      })
+      .addCase(AuthOperations.logOut.fulfilled, (state, _) => {
+        state.accessToken = null;
+        state.refreshToken = null;
+      })
+      .addCase(AuthOperations.logOut.rejected, (state, _) => {
+        state.isLoggedIn = false;
       });
-
-    // [AuthOperations.register.pending](state, action) {
-    //   state.isErrorRegister = null;
-    // },
-    // [AuthOperations.register.fulfilled](state, action) {
-    //   state.user = action.payload.user;
-    //   state.token = action.payload.token;
-    //   state.isLoggedIn = true;
-    //   state.isErrorRegister = false;
-    // },
-    // [AuthOperations.register.rejected](state, action) {
-    //   state.isErrorRegister = action.payload;
-    // },
-    // [AuthOperations.logIn.pending](state, action) {
-    //   state.isErrorLogin = null;
-    // },
-    // [AuthOperations.logIn.fulfilled](state, action) {
-    //   state.user = action.payload.user;
-    //   state.token = action.payload.token;
-    //   state.isLoggedIn = true;
-    // },
-    // [AuthOperations.logIn.rejected](state, action) {
-    //   state.isErrorLogin = action.payload;
-    // },
-
-    // [AuthOperations.logOut.fulfilled](state, action) {
-    //   state.user = { name: null, email: null };
-    //   state.token = null;
-    //   state.isLoggedIn = false;
-    // },
-    // [AuthOperations.fetchCurrentUser.pending](state) {
-    //   state.isRefreshingCurrentUser = true;
-    // },
-    // [AuthOperations.fetchCurrentUser.fulfilled](state, action) {
-    //   state.user = action.payload;
-    //   state.isLoggedIn = true;
-    //   state.isRefreshingCurrentUser = false;
-    // },
-    // [AuthOperations.fetchCurrentUser.rejected](state) {
-    //   state.isRefreshingCurrentUser = false;
-    // },
   },
 });
-
+export const { setNewCredentials } = authSlice.actions;
 export default authSlice.reducer;

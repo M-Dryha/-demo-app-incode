@@ -1,8 +1,12 @@
 .form {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .link {
-    color: #ADD8E6,
+  color: #add8e6;
+  text-decoration: none;
+  font-size: 12px;
+  line-height: 1.55;
+  font-family: 'Montserrat';
 }

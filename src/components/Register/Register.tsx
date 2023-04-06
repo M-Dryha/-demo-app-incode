@@ -1,26 +1,48 @@
 import { useFormik } from 'formik';
 import { Link } from 'react-router-dom';
-import { Typography, Button, Box, Container } from '@mui/material';
+import Loader from '../Loader';
+import {
+  Typography,
+  Button,
+  Box,
+  Container,
+  IconButton,
+  InputAdornment,
+  Alert,
+  Collapse,
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { useState } from 'react';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useAppDispatch } from '../../helpers/hooks/hook';
 import { AuthOperations } from '../../redux/auth';
 import { userSchemaRegister } from '../../schemas/RegisterSchema';
 import { WhiteTextField } from './styledComponent';
-// import { useAppSelector } from '../../helpers/hooks/hook';
+import { useAppSelector } from '../../helpers/hooks/hook';
+import { getIsLoggedInLoading } from '../../redux/auth/selectors';
+import { UserData } from '../.././types/type';
 import s from './Register.module.scss';
-
-interface UserData {
-  password: string;
-  username: string;
-  displayName: string;
-}
 
 const Register: React.FC<UserData> = () => {
   const dispatch = useAppDispatch();
-  // const isLoading = useAppSelector(state => state.auth.isLoggedIn);
-  // const resetPaste: HTMLButtonElement = event => event.preventDefault();
+  const isLoading = useAppSelector(getIsLoggedInLoading);
+  const isErrorRegistered = useAppSelector(state => state.auth.isErrorRegister);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [open, setOpen] = useState(true);
+
+  const handleClickShowPassword = () => setShowPassword(show => !show);
+  const handleClickShowConfirmPassword = () =>
+    setShowConfirmPassword(show => !show);
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
 
   const handleSubmit = (values: UserData) => {
-    console.log('values', values);
     dispatch(
       AuthOperations.register({
         password: values.password,
@@ -28,6 +50,7 @@ const Register: React.FC<UserData> = () => {
         displayName: values.displayName,
       })
     );
+    formik.resetForm();
   };
 
   const formik = useFormik({
@@ -40,18 +63,18 @@ const Register: React.FC<UserData> = () => {
     validationSchema: userSchemaRegister,
     onSubmit: handleSubmit,
   });
-  console.log(formik.values);
 
-  // const isDisabled =
-  //   Boolean(
-  //     formik.errors.password ||
-  //       formik.errors.displayName ||
-  //       formik.errors.username ||
-  //       formik.errors.confirmPassword
-  //   ) || isLoading;
+  const isDisabled =
+    Boolean(
+      formik.errors.password ||
+        formik.errors.displayName ||
+        formik.errors.username ||
+        formik.errors.confirmPassword
+    ) || isLoading;
 
   return (
     <Container>
+      {isLoading && <Loader />}
       <Box
         sx={{
           border: '1px dashed grey',
@@ -60,7 +83,7 @@ const Register: React.FC<UserData> = () => {
           pl: '48px',
           pr: '48px',
           pb: '140px',
-          bgcolor: '#1D283A',
+          bgcolor: 'secondary.dark',
           mx: 'auto',
         }}
       >
@@ -125,7 +148,6 @@ const Register: React.FC<UserData> = () => {
           />
 
           <WhiteTextField
-            type="password"
             label="Password"
             variant="standard"
             required={true}
@@ -134,14 +156,29 @@ const Register: React.FC<UserData> = () => {
             onChange={formik.handleChange}
             helperText={formik.touched.password && formik.errors.password}
             onBlur={formik.handleBlur}
-            sx={{ color: '#fff', mb: '24px' }}
+            sx={{ color: '#fff', mb: '24px', borderBottom: '2px solid #fff' }}
             size="small"
+            type={showPassword ? 'text' : 'password'}
+            InputProps={{
+              disableUnderline: true,
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    sx={{ color: 'white' }}
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
 
           <WhiteTextField
-            type="password"
-            variant="standard"
             label="Confirm password"
+            variant="standard"
             required={true}
             name="confirmPassword"
             value={formik.values.confirmPassword}
@@ -150,14 +187,30 @@ const Register: React.FC<UserData> = () => {
               formik.touched.confirmPassword && formik.errors.confirmPassword
             }
             onBlur={formik.handleBlur}
-            sx={{ color: '#fff', mb: '32px' }}
+            sx={{ color: '#fff', mb: '32px', borderBottom: '2px solid #fff' }}
             size="small"
-            //  onPaste={resetPaste}
+            type={showConfirmPassword ? 'text' : 'password'}
+            InputProps={{
+              disableUnderline: true,
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    sx={{ color: 'white' }}
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowConfirmPassword}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
 
           <Button
             variant="contained"
             type="submit"
+            disabled={isDisabled}
             sx={{
               bgColor: 'primary.dark',
               height: '44px',
@@ -165,10 +218,36 @@ const Register: React.FC<UserData> = () => {
               fontWeight: '600',
               fontSize: '16px',
               lineHeight: '1.55',
+              '&$disabled': {
+                bgColor: 'white',
+              },
             }}
           >
             Sign Up
           </Button>
+          {isErrorRegistered && (
+            <Box sx={{ width: '100%' }}>
+              <Collapse in={open}>
+                <Alert
+                  color="error"
+                  action={
+                    <IconButton
+                      aria-label="close"
+                      color="inherit"
+                      size="small"
+                      onClick={() => {
+                        setOpen(false);
+                      }}
+                    >
+                      <CloseIcon fontSize="inherit" />
+                    </IconButton>
+                  }
+                >
+                  {isErrorRegistered}
+                </Alert>
+              </Collapse>
+            </Box>
+          )}
           <Box
             sx={{
               display: 'flex',

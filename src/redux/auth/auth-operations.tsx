@@ -1,97 +1,70 @@
-import axios from 'axios';
+// import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-// import {RootState} from '../store';
+import { signUpUser, signInUser, getCurrentUser, logOutUser } from './api';
+// import { setNewCredentials } from './authSlice';
+// import { useAppDispatch } from '../../helpers/hooks/hook';
+import { ISignUpUser, ISignInUser } from '../.././types/type';
 
-axios.defaults.baseURL = 'https://expa.fly.dev';
-type User = {
-  password: string;
-  username: string;
-  displayName: string;
-};
-
-interface AuthUser {
-  user: User;
-  // token: string | null;
-  refreshToken: string;
-  // isErrorRegister: any;
-  isErrorRegister: string | null;
-  isLoggedIn: boolean;
-}
-
-const token = {
-  set(token: string) {
-    axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-  },
-  unset() {
-    axios.defaults.headers.common.Authorization = '';
-  },
-};
-
-const register = createAsyncThunk<AuthUser, null, { rejectValue: string }>(
+const register = createAsyncThunk<ISignUpUser, null, { rejectValue: string }>(
   '/auth/register',
   async (credentials, { rejectWithValue }) => {
     try {
-      const { data } = await axios.post('/auth/register', credentials);
-      token.set(data.token);
+      const { data } = await signUpUser(credentials);
       return data;
-    } catch (error) {
-      return rejectWithValue('Server Error');
+    } catch (error: any) {
+      return rejectWithValue(error.message);
     }
   }
 );
 
-const signIn = createAsyncThunk<AuthUser, null, { rejectValue: string }>(
+const signIn = createAsyncThunk<ISignInUser, null, { rejectValue: string }>(
   '/auth/login',
   async (credentials, { rejectWithValue }) => {
     try {
-      const { data } = await axios.post('/auth/login', credentials);
-      token.set(data.token);
-      console.log(data);
+      const { data } = await signInUser(credentials);
+
       return data;
-    } catch (error) {
-      return rejectWithValue('Error');
+    } catch (error: any) {
+      return rejectWithValue(error.message);
     }
   }
 );
 
-// const logOut = createAsyncThunk(
-//   '/auth/logout',
-//   async (_, { rejectWithValue }) => {
-//     try {
-//       const { data } = await axios.post('/auth/logout');
-//       token.unset();
-//       return data;
-//     } catch (error) {
-//       return rejectWithValue(error.message);
-//     }
-//   }
-// );
+const logOut = createAsyncThunk(
+  '/auth/logout',
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await logOutUser();
+      console.log('data', data);
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+interface ITokens {
+  accessToken: string;
+  refreshToken: string;
+}
 
 const fetchCurrentUser = createAsyncThunk<
-  AuthUser,
+  ITokens,
   null,
   { rejectValue: string }
->('auth/refresh', async (_, thunkAPI) => {
-  const state: any = thunkAPI.getState();
-  const persistedToken = state.auth.refreshToken;
-
-  if (persistedToken === null) {
-    thunkAPI.rejectWithValue('No token');
-  }
-
-  token.set(persistedToken);
+>('/users/self', async (__, { rejectWithValue }) => {
   try {
-    const { data } = await axios.get('/users/self');
+    const { data } = await getCurrentUser();
     return data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue('Error, no data');
+  } catch (error: any) {
+    return rejectWithValue(error.message);
   }
 });
 
 const AuthOperations = {
   register,
   signIn,
-  //   logOut,
+  logOut,
   fetchCurrentUser,
 };
 export default AuthOperations;

@@ -20,4 +20,7 @@ export const WhiteTextField = styled(TextField)({
   '& .MuiInputLabel-root': {
     color: 'white',
   },
+  '& .MuiInput-underline::before': {
+    borderBottom: '2px solid #fff',
+  },
 });

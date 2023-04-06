@@ -1,35 +1,16 @@
 import * as Yup from 'yup';
 import { inputErrors } from '../helpers/errors';
-// Деструктуризировать errors
 import { NAME_REGEXP, PASSWORD_REGEXP } from '../helpers/regexp';
 
-// interface User {
-//   fullName: string;
-//   userName: string;
-//   email: string;
-// }
-// type User = Yup.InferType<typeof registerSchema>;
-
-// const user: User = {
-//   // using interface instead of type generally gives nicer editor feedback
-//   displayName: '',
-//   username: '',
-//   password: '',
-//   confirmPassword: '',
-// };
-
 export const userSchemaSignIn = Yup.object({
-  displayName: Yup.string()
+  username: Yup.string()
     .matches(NAME_REGEXP, inputErrors.MISTAKE)
-    .min(3, inputErrors.MISTAKE)
-    .max(100, inputErrors.MISTAKE)
+    .min(3, 'Не менше 3 символів')
+    .max(100, 'Не більше 100 символів')
     .required(inputErrors.REQUIRED),
   password: Yup.string()
     .matches(PASSWORD_REGEXP, inputErrors.MISTAKE)
-    .min(8, inputErrors.MISTAKE)
-    .max(30, inputErrors.MISTAKE)
+    .min(8, 'Не менше 8 символів')
+    .max(30, 'Не більше 30 символів')
     .required(inputErrors.REQUIRED),
 });
-
-// const userSchemaRegister = registerSchema.isValidSync(user);
-// export default userSchemaRegister;

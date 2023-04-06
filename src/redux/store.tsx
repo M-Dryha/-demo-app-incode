@@ -14,8 +14,9 @@ import authSlice from '././auth/authSlice';
 
 const authPersistConfig = {
   key: 'auth',
+  version: 1,
   storage,
-  whitelist: ['refreshToken '],
+  whitelist: ['refreshToken', 'accessToken'],
 };
 
 const middleware = [
