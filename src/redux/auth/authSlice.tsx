@@ -15,6 +15,7 @@ const initialState = {
   isLoggedIn: false,
   isLoggedInLoading: false,
   isErrorLogin: false,
+  isLoggedOut: false,
 } as AuthUser;
 
 const authSlice = createSlice({
@@ -70,9 +71,11 @@ const authSlice = createSlice({
         state.accessToken = null;
         state.refreshToken = null;
         state.isLoggedIn = false;
+        state.isLoggedOut = true;
       })
       .addCase(AuthOperations.logOut.rejected, (state, _) => {
         state.isLoggedIn = true;
+        state.isLoggedOut = false;
       });
   },
 });

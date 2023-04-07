@@ -45,5 +45,6 @@ export interface AuthUser {
   isErrorRegister: boolean | string;
   isLoggedIn: boolean;
   isLoggedInLoading: boolean;
+  isLoggedOut: boolean;
   isErrorLogin: boolean | string;
 }

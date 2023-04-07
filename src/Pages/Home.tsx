@@ -1,9 +1,10 @@
-import { Typography, Button, Box, Container } from '@mui/material';
-import { useAppDispatch } from '../helpers/hooks/hook';
+import { Typography, Button, Box, Container, Alert } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '../helpers/hooks/hook';
 import { AuthOperations } from '../redux/auth';
 import Vector from '../pictures/Vector.png';
 
 const Home: React.FC = () => {
+  const isLoggedOut = useAppSelector(state => state.auth.isLoggedOut);
   const styles: any = {
     Container: {
       backgroundImage: `url(${Vector})
@@ -22,7 +23,6 @@ const Home: React.FC = () => {
 
   const onLogOut = (event: React.MouseEvent<HTMLButtonElement>) => {
     dispatch(AuthOperations.logOut());
-    console.log(event);
   };
   return (
     <Container
@@ -96,10 +96,16 @@ const Home: React.FC = () => {
             fontWeight: '600',
             fontSize: '14px',
             lineHeight: '1.55',
+            mb: '10px',
           }}
         >
           Log out
         </Button>
+        {isLoggedOut && (
+          <Box sx={{ width: '100%' }}>
+            <Alert>You are logged out</Alert>
+          </Box>
+        )}
       </Box>
       <div style={styles.Container}></div>
     </Container>

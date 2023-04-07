@@ -43,6 +43,7 @@ api.interceptors.response.use(
     ) {
       const tokenToRefresh = getRefreshToken(store.getState());
       const { data } = await getRefreshTokenUser(tokenToRefresh);
+
       store.dispatch(
         setNewCredentials({
           accessToken: data.accessToken,
