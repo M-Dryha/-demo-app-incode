@@ -14,7 +14,6 @@ const initialState = {
   isErrorRegister: false,
   isLoggedIn: false,
   isLoggedInLoading: false,
-  isRefreshingCurrentUser: false,
   isErrorLogin: false,
 } as AuthUser;
 
@@ -70,9 +69,10 @@ const authSlice = createSlice({
       .addCase(AuthOperations.logOut.fulfilled, (state, _) => {
         state.accessToken = null;
         state.refreshToken = null;
+        state.isLoggedIn = false;
       })
       .addCase(AuthOperations.logOut.rejected, (state, _) => {
-        state.isLoggedIn = false;
+        state.isLoggedIn = true;
       });
   },
 });

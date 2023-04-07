@@ -3,7 +3,7 @@ import { useAppDispatch } from '../helpers/hooks/hook';
 import { AuthOperations } from '../redux/auth';
 import Vector from '../pictures/Vector.png';
 
-export const Home: React.FC = () => {
+const Home: React.FC = () => {
   const styles: any = {
     Container: {
       backgroundImage: `url(${Vector})
@@ -105,3 +105,5 @@ export const Home: React.FC = () => {
     </Container>
   );
 };
+
+export default Home;

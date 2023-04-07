@@ -6,11 +6,11 @@ const Loader = () => {
     <Container sx={{ display: 'flex', justifyContent: 'center' }}>
       {
         <ThreeCircles
-          height="50"
-          width="50"
+          height="75"
+          width="75"
           color="#f06292"
           outerCircleColor="grey"
-          middleCircleColor="#f06292"
+          middleCircleColor="grey"
           innerCircleColor="grey"
         />
       }

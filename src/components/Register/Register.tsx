@@ -1,6 +1,5 @@
 import { useFormik } from 'formik';
 import { Link } from 'react-router-dom';
-import Loader from '../Loader';
 import {
   Typography,
   Button,
@@ -28,6 +27,7 @@ const Register: React.FC<UserData> = () => {
   const dispatch = useAppDispatch();
   const isLoading = useAppSelector(getIsLoggedInLoading);
   const isErrorRegistered = useAppSelector(state => state.auth.isErrorRegister);
+  const isRegistered = useAppSelector(state => state.auth.isRegister);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [open, setOpen] = useState(true);
@@ -74,7 +74,6 @@ const Register: React.FC<UserData> = () => {
 
   return (
     <Container>
-      {isLoading && <Loader />}
       <Box
         sx={{
           border: '1px dashed grey',
@@ -195,7 +194,7 @@ const Register: React.FC<UserData> = () => {
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
-                    sx={{ color: 'white' }}
+                    sx={{ color: 'white', bgColor: 'transparent' }}
                     aria-label="toggle password visibility"
                     onClick={handleClickShowConfirmPassword}
                     onMouseDown={handleMouseDownPassword}
@@ -244,6 +243,29 @@ const Register: React.FC<UserData> = () => {
                   }
                 >
                   {isErrorRegistered}
+                </Alert>
+              </Collapse>
+            </Box>
+          )}
+          {isRegistered && (
+            <Box sx={{ width: '100%' }}>
+              <Collapse in={open}>
+                <Alert
+                  action={
+                    <IconButton
+                      aria-label="close"
+                      color="inherit"
+                      size="small"
+                      onClick={() => {
+                        setOpen(false);
+                      }}
+                    >
+                      <CloseIcon fontSize="inherit" />
+                    </IconButton>
+                  }
+                >
+                  {' '}
+                  <Link to="/login">Go to Sign In</Link>
                 </Alert>
               </Collapse>
             </Box>

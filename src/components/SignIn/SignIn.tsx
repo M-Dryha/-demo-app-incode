@@ -1,4 +1,3 @@
-// import { useFormik, ErrorMessage } from 'formik';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import Alert from '@mui/material/Alert';
@@ -6,9 +5,6 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../helpers/hooks/hook';
-// import { getIsLoggedIn, getLoginError } from '../../redux/auth/selectors';
-// import { Navigate } from 'react-router-dom';
-
 import {
   Typography,
   Button,
@@ -25,8 +21,6 @@ import { WhiteTextField } from './styledComponentSignIn';
 import { getIsLoggedInLoading } from '../../redux/auth/selectors';
 import s from './SignIn.module.scss';
 import { LoginData } from '../.././types/type';
-// import { store } from '../../redux/store';
-// import { RootState } from '../../redux/store';
 
 const SignIn: React.FC<LoginData> = () => {
   const dispatch = useAppDispatch();

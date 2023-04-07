@@ -28,6 +28,5 @@ export const WhiteTextField = styled(TextField)({
   },
   '& .MuiInputBase-input': {
     color: '#fff',
-    borderBottom: '2px solid #fff',
   },
 });

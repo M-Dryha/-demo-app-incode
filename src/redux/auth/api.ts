@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { getAccessToken, getRefreshToken } from './selectors';
-// import { useAppSelector } from '../../helpers/hooks/hook';
 import { setNewCredentials } from './authSlice';
 import { User, UserSignIn } from '../.././types/type';
 
@@ -62,12 +61,11 @@ api.interceptors.response.use(
 
 export const signUpUser = (credentials: User) =>
   api.post('/auth/register', credentials);
+
 export const signInUser = (credentials: UserSignIn) =>
   api.post('/auth/login', credentials);
 
 export const getRefreshTokenUser = (refreshToken: string | null) =>
   api.post('/auth/refresh', { refreshToken });
-
-export const getCurrentUser = () => api.get('/users/self');
 
 export const logOutUser = () => api.get('/auth/logout');

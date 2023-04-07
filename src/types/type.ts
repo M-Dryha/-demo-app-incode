@@ -45,6 +45,5 @@ export interface AuthUser {
   isErrorRegister: boolean | string;
   isLoggedIn: boolean;
   isLoggedInLoading: boolean;
-  isRefreshingCurrentUser: boolean;
   isErrorLogin: boolean | string;
 }
